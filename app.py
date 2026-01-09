@@ -108,33 +108,19 @@ def modulo_membretes():
                         # Aplicar membrete
                         pdf_con_membrete = aplicar_membrete_pdf(pdf_file, membrete_path)
                         
-                        st.success("✅ ¡Membrete aplicado correctamente! Descargando...")
+                        st.success("✅ ¡Membrete aplicado correctamente!")
                         
-                        # Descarga automática
-                        nombre_salida = f"{os.path.splitext(pdf_file.name)[0]}.pdf"
+                        # Nombre del archivo de salida
+                        nombre_salida = f"{os.path.splitext(pdf_file.name)[0]}_con_membrete.pdf"
                         
-                        # Crear descarga automática con JavaScript
-                        import base64
-                        b64 = base64.b64encode(pdf_con_membrete).decode()
-                        href = f'<a href="data:application/pdf;base64,{b64}" download="{nombre_salida}" id="download_link"></a>'
-                        st.markdown(href, unsafe_allow_html=True)
-                        st.markdown(
-                            f"""
-                            <script>
-                                var link = document.getElementById('download_link');
-                                link.click();
-                            </script>
-                            """,
-                            unsafe_allow_html=True
-                        )
-                        
-                        # También mostrar botón manual por si acaso
+                        # Botón de descarga
                         st.download_button(
-                            label="⬇️ Descargar nuevamente",
+                            label="📥 Descargar PDF con Membrete",
                             data=pdf_con_membrete,
                             file_name=nombre_salida,
                             mime="application/pdf",
-                            type="secondary"
+                            type="primary",
+                            use_container_width=True
                         )
                         
                     except Exception as e:
@@ -374,19 +360,14 @@ def modulo_cotizaciones():
                 
                 st.success("✅ ¡PDF de prueba generado!")
                 
-                # Abrir PDF en visualizador
-                import base64
-                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-                pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
-                st.markdown(pdf_display, unsafe_allow_html=True)
-                
-                # También ofrecer descarga
+                # Botón de descarga
                 nombre_archivo = f"Cotizacion_PRUEBA_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
                 st.download_button(
-                    label="⬇️ Descargar PDF",
+                    label="📥 Descargar PDF de Prueba",
                     data=pdf_bytes,
                     file_name=nombre_archivo,
                     mime="application/pdf",
+                    type="primary",
                     use_container_width=True
                 )
                 
@@ -435,19 +416,14 @@ def modulo_cotizaciones():
                 
                 st.success("✅ ¡Cotización generada correctamente!")
                 
-                # Abrir PDF en visualizador
-                import base64
-                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-                pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
-                st.markdown(pdf_display, unsafe_allow_html=True)
-                
-                # También ofrecer descarga
+                # Botón de descarga
                 nombre_archivo = f"Cotizacion_{folio}_{datetime.now().strftime('%Y%m%d')}.pdf"
                 st.download_button(
-                    label="⬇️ Descargar Cotización PDF",
+                    label="📥 Descargar Cotización PDF",
                     data=pdf_bytes,
                     file_name=nombre_archivo,
                     mime="application/pdf",
+                    type="primary",
                     type="primary",
                     use_container_width=True
                 )
