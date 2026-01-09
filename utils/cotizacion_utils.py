@@ -30,7 +30,7 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
         rightMargin=0.60*inch,
         leftMargin=0.60*inch,
         topMargin=0.05*inch,
-        bottomMargin=0.15*inch
+        bottomMargin=0.05*inch
     )
     
     # Contenedor de elementos
@@ -133,7 +133,7 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     ]))
     
     elements.append(info_table)
-    elements.append(Spacer(1, 0.2*inch))
+    elements.append(Spacer(1, 0.05*inch))
     
     # --- DATOS DEL CLIENTE ---
     cliente = datos_cotizacion['cliente']
@@ -159,7 +159,7 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     ]))
     
     elements.append(cliente_table)
-    elements.append(Spacer(1, 0.3*inch))
+    elements.append(Spacer(1, 0.05*inch))
     
     # --- TABLA DE PRODUCTOS/SERVICIOS ---
     elements.append(Paragraph("DETALLE", style_heading))
@@ -201,7 +201,7 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     ]))
     
     elements.append(productos_table)
-    elements.append(Spacer(1, 0.2*inch))
+    elements.append(Spacer(1, 0.05*inch))
     
     # --- TOTALES ---
     # Calcular descuento
@@ -249,7 +249,7 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     ]))
 
     elements.append(totales_table)
-    elements.append(Spacer(1, 0.75*inch))
+    elements.append(Spacer(1, 0.1*inch))
     
     # --- TÉRMINOS Y CONDICIONES Y DATOS DE EMPRESA EN COLUMNAS ---
     # Estilo para datos de empresa alineados a la derecha
