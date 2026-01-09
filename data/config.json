@@ -25,7 +25,7 @@
       "direccion": "Luis Cortázar 154, Colonia Guanajuato Oriente, Saltillo Coahuila",
       "telefono": "8442369864",
       "email": "enriquemtz.aca@gmail.com",
-      "logo": "logos/empresa3.png"
+      "logo": "logos/corporativo.png"
     }
   ],
   "catalogo_productos": [
@@ -35,7 +35,7 @@
       "precio_unitario": 80000.00
     },
     {
-      "codigo": "PROD-002",
+      "codigo": "ATPS-002",
       "descripcion": "Servicio de ejemplo 1",
       "precio_unitario": 250.00
     },
