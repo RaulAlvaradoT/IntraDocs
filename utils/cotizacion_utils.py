@@ -205,12 +205,12 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     descuento_config = datos_cotizacion.get('descuento', {})
     
     if descuento_config.get('aplicar', False):
-        tipo_descuento = descuento_config.get('tipo', 'porcentaje')
+        tipo_descuento = descuento_config.get('tipo', 'Porcentaje')
         valor_descuento = descuento_config.get('valor', 0)
         
-        if tipo_descuento == 'porcentaje':
+        if tipo_descuento == 'Porcentaje':
             descuento_valor = subtotal_general * (valor_descuento / 100)
-        else:  # monto fijo
+        else:  # Monto fijo
             descuento_valor = valor_descuento
     
     subtotal_con_descuento = subtotal_general - descuento_valor
@@ -222,9 +222,14 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     ]
     
     if descuento_valor > 0:
-        tipo_desc = descuento_config.get('tipo', 'porcentaje')
+        tipo_desc = descuento_config.get('tipo', 'Porcentaje')
         valor_desc = descuento_config.get('valor', 0)
-        desc_label = f"Descuento ({valor_desc}%):" if tipo_desc == 'porcentaje' else "Descuento:"
+        
+        if tipo_desc == 'Porcentaje':
+            desc_label = f"Descuento ({valor_desc}%):"
+        else:
+            desc_label = "Descuento:"
+        
         totales_data.append([desc_label, f"-${descuento_valor:,.2f}"])
     
     totales_data.extend([
