@@ -59,6 +59,6 @@
     "iva": 0.16,
     "moneda": "MXN",
     "validez_cotizacion_dias": 30,
-    "terminos_condiciones": "- Los precios están sujetos a cambios sin previo aviso.\n- La cotización tiene una validez de 30 días naturales.\n- Forma de pago: 50% anticipo, 50% contra entrega.\n- Tiempo de entrega: A convenir según disponibilidad."
+    "terminos_condiciones": "- Los precios están sujetos a cambios sin previo aviso.\n- La cotización tiene una validez de 30 días naturales."
   }
 }
