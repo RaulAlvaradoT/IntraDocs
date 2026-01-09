@@ -29,7 +29,7 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
         pagesize=letter,
         rightMargin=0.60*inch,
         leftMargin=0.60*inch,
-        topMargin=0.05*inch,
+        topMargin=0.01*inch,
         bottomMargin=0.05*inch
     )
     
@@ -107,7 +107,7 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     ]))
     
     elements.append(header_table)
-    elements.append(Spacer(1, 0.015*inch))
+    elements.append(Spacer(1, 0.005*inch))
     
     # --- INFORMACIÓN DE LA COTIZACIÓN ---
     fecha_actual = datetime.now()
@@ -133,11 +133,10 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     ]))
     
     elements.append(info_table)
-    elements.append(Spacer(1, 0.05*inch))
+    elements.append(Spacer(1, 0.35*inch))
     
     # --- DATOS DEL CLIENTE ---
     cliente = datos_cotizacion['cliente']
-    elements.append(Paragraph("DATOS DEL CLIENTE", style_heading))
     
     cliente_data = [
         ['Cliente:', cliente.get('nombre', '')],
@@ -159,11 +158,8 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     ]))
     
     elements.append(cliente_table)
-    elements.append(Spacer(1, 0.05*inch))
-    
-    # --- TABLA DE PRODUCTOS/SERVICIOS ---
-    elements.append(Paragraph("DETALLE", style_heading))
-    
+    elements.append(Spacer(1, 0.35*inch))
+        
     # Encabezados de la tabla
     productos_data = [['Código', 'Descripción', 'Cantidad', '$ Unit.', 'Subtotal']]
     
