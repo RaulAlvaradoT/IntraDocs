@@ -424,7 +424,6 @@ def modulo_cotizaciones():
                     file_name=nombre_archivo,
                     mime="application/pdf",
                     type="primary",
-                    type="primary",
                     use_container_width=True
                 )
                 
