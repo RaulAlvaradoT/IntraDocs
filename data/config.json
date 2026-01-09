@@ -31,28 +31,33 @@
   "catalogo_productos": [
     {
       "codigo": "IMPT-001",
-      "descripcion": "Implementación NOM-035",
-      "precio_unitario": 80000.00
+      "descripcion": "Renta de plataforma para aplicación de guías (I, III, V)",
+      "precio_unitario": 6500.00
     },
     {
-      "codigo": "ATPS-002",
-      "descripcion": "Servicio de ejemplo 1",
-      "precio_unitario": 250.00
+      "codigo": "IMPT-002",
+      "descripcion": "Dashboard (1 año de acceso)",
+      "precio_unitario": 6500.00
     },
     {
-      "codigo": "PROD-003",
-      "descripcion": "Producto de ejemplo 2",
-      "precio_unitario": 500.00
+      "codigo": "IMPT-003",
+      "descripcion": "Acompañamiento técnico",
+      "precio_unitario": 1625.00
     },
     {
-      "codigo": "SERV-001",
-      "descripcion": "Consultoría por hora",
-      "precio_unitario": 800.00
+      "codigo": "IMPT-003",
+      "descripcion": "Acompañamiento técnico",
+      "precio_unitario": 1625.00
     },
     {
-      "codigo": "SERV-002",
-      "descripcion": "Instalación y configuración",
-      "precio_unitario": 1500.00
+      "codigo": "IMPT-004",
+      "descripcion": "Consultoría",
+      "precio_unitario": 1625.00
+    },
+    {
+      "codigo": "IMPT-005",
+      "descripcion": "Elaboración de informes personalizados: Demográfico, ejecutivo y ATS",
+      "precio_unitario": 11310.00
     }
   ],
   "configuracion": {
