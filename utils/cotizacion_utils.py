@@ -249,7 +249,7 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     ]))
 
     elements.append(totales_table)
-    elements.append(Spacer(1, 0.1*inch))
+    elements.append(Spacer(1, 0.5*inch))
     
     # --- TÉRMINOS Y CONDICIONES Y DATOS DE EMPRESA EN COLUMNAS ---
     # Estilo para datos de empresa alineados a la derecha
