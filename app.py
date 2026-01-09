@@ -234,22 +234,56 @@ def modulo_cotizaciones():
         if st.session_state.items_cotizacion:
             st.write(f"**Total de items:** {len(st.session_state.items_cotizacion)}")
             
-            # Mostrar items de forma compacta
+            # Mostrar items con opción de editar
             for idx, item in enumerate(st.session_state.items_cotizacion):
-                with st.container():
-                    col1, col2 = st.columns([5, 1])
+                with st.expander(f"**{idx+1}.** {item['codigo']} - {item['descripcion']}", expanded=False):
+                    # Columnas para edición
+                    col_edit1, col_edit2 = st.columns(2)
                     
-                    with col1:
-                        st.markdown(f"**{item['codigo']}** - {item['descripcion']}")
-                        st.caption(f"Cantidad: {item['cantidad']} | Precio: ${item['precio_unitario']:,.2f} | Subtotal: ${item['cantidad'] * item['precio_unitario']:,.2f}")
+                    with col_edit1:
+                        nuevo_codigo = st.text_input("Código", value=item['codigo'], key=f"edit_codigo_{idx}")
+                        nueva_cantidad = st.number_input("Cantidad", min_value=1, value=item['cantidad'], key=f"edit_cant_{idx}")
                     
-                    with col2:
-                        if st.button("🗑️", key=f"del_{idx}", help="Eliminar item"):
-                            st.session_state.items_cotizacion.pop(idx)
+                    with col_edit2:
+                        nueva_desc = st.text_input("Descripción", value=item['descripcion'], key=f"edit_desc_{idx}")
+                        nuevo_precio = st.number_input("Precio Unit.", min_value=0.0, value=float(item['precio_unitario']), step=10.0, key=f"edit_precio_{idx}")
+                    
+                    st.caption(f"**Subtotal:** ${nueva_cantidad * nuevo_precio:,.2f}")
+                    
+                    # Botones de acción
+                    col_btn1, col_btn2, col_btn3, col_btn4, col_btn5 = st.columns(5)
+                    
+                    with col_btn1:
+                        if st.button("💾 Guardar", key=f"save_{idx}", use_container_width=True):
+                            st.session_state.items_cotizacion[idx] = {
+                                'codigo': nuevo_codigo,
+                                'descripcion': nueva_desc,
+                                'cantidad': nueva_cantidad,
+                                'precio_unitario': nuevo_precio
+                            }
+                            st.success("✅ Guardado")
                             st.rerun()
                     
-                    st.divider()
+                    with col_btn2:
+                        if idx > 0:
+                            if st.button("⬆️", key=f"up_{idx}", help="Mover arriba", use_container_width=True):
+                                st.session_state.items_cotizacion[idx], st.session_state.items_cotizacion[idx-1] = \
+                                    st.session_state.items_cotizacion[idx-1], st.session_state.items_cotizacion[idx]
+                                st.rerun()
+                    
+                    with col_btn3:
+                        if idx < len(st.session_state.items_cotizacion) - 1:
+                            if st.button("⬇️", key=f"down_{idx}", help="Mover abajo", use_container_width=True):
+                                st.session_state.items_cotizacion[idx], st.session_state.items_cotizacion[idx+1] = \
+                                    st.session_state.items_cotizacion[idx+1], st.session_state.items_cotizacion[idx]
+                                st.rerun()
+                    
+                    with col_btn4:
+                        if st.button("🗑️ Eliminar", key=f"del_{idx}", type="secondary", use_container_width=True):
+                            st.session_state.items_cotizacion.pop(idx)
+                            st.rerun()
             
+            st.markdown("---")
             if st.button("🗑️ Limpiar todos los items", type="secondary", use_container_width=True):
                 st.session_state.items_cotizacion = []
                 st.rerun()
