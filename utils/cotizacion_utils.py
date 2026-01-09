@@ -83,13 +83,17 @@ def generar_cotizacion_pdf(datos_cotizacion, config):
     titulo_cotizacion = Paragraph("COTIZACIÓN", style_title)
     
     # Logo a la derecha
-    if os.path.exists(empresa['logo']):
+    logo_path = empresa.get('logo', '')
+    if logo_path and os.path.exists(logo_path):
         try:
-            logo = Image(empresa['logo'], width=1.75*inch, height=1.75*inch)
+            logo = Image(logo_path, width=1.75*inch, height=1.75*inch)
             header_data.append([titulo_cotizacion, logo])
-        except:
+        except Exception as e:
+            print(f"Error al cargar logo {logo_path}: {e}")
             header_data.append([titulo_cotizacion, ""])
     else:
+        if logo_path:
+            print(f"Archivo de logo no encontrado: {logo_path}")
         header_data.append([titulo_cotizacion, ""])
     
     # Crear tabla con distribución 60% - 40%
