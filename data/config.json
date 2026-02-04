@@ -53,6 +53,46 @@
       "codigo": "IMPT-005",
       "descripcion": "Elaboración de informes: Demográfico, ejecutivo y ATS",
       "precio_unitario": 12428.00
+    },
+    {
+      "codigo": "IMPT-006",
+      "descripcion": "Seguimiento grupal (Nivel de urgencia medio)",
+      "precio_unitario": 10000.00
+    },
+    {
+      "codigo": "IMPT-007",
+      "descripcion": "Seguimiento grupal (Nivel de urgencia alto)",
+      "precio_unitario": 10000.00
+    },
+    {
+      "codigo": "IMPT-008",
+      "descripcion": "Seguimiento individual (Nivel urgente)",
+      "precio_unitario": 499.00
+    },
+    {
+      "codigo": "VL-001",
+      "descripcion": "Taller - Intervención Violencia Laboral",
+      "precio_unitario": 3900.00
+    },
+    {
+      "codigo": "VL-002",
+      "descripcion": "Evaluación individual - Intervención Violencia Laboral",
+      "precio_unitario": 2200.00
+    },
+    {
+      "codigo": "VL-003",
+      "descripcion": "Acta de Comité de atención y seguimiento",
+      "precio_unitario": 3050.00
+    },
+    {
+      "codigo": "VL-004",
+      "descripcion": "Plan de acción - Intervención Violencia Laboral",
+      "precio_unitario": 4270.00
+    },
+    {
+      "codigo": "VL-005",
+      "descripcion": "Actualización de politica de prevención de violencia laboral",
+      "precio_unitario": 3050.00
     }
   ],
   "configuracion": {
