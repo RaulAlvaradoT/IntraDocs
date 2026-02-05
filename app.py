@@ -1,5 +1,5 @@
 """
-Aplicación Streamlit - Sistema de Membretes y Cotizaciones
+Aplicación Streamlit - Sistema de Membretes, Cotizaciones y Comprobantes de Pago
 """
 import streamlit as st
 import os
@@ -7,11 +7,12 @@ import json
 from datetime import datetime
 from utils.pdf_utils import aplicar_membrete_pdf, validar_pdf
 from utils.cotizacion_utils import generar_cotizacion_pdf
+from utils.comprobante_utils import generar_comprobante_pdf
 
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Documentador - Membretes y Cotizaciones",
+    page_title="Documentador - Membretes, Cotizaciones y Comprobantes",
     page_icon="📄",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -465,6 +466,217 @@ def modulo_cotizaciones():
                 st.error(f"❌ Error al generar la cotización: {str(e)}")
 
 
+def modulo_comprobantes():
+    """Módulo para generar comprobantes de pago"""
+    
+    # Cargar configuración
+    config = cargar_configuracion()
+    if not config:
+        st.error("❌ No se pudo cargar la configuración. Verifica el archivo data/config.json")
+        return
+    
+    # Inicializar session state para conceptos
+    if 'conceptos_comprobante' not in st.session_state:
+        st.session_state.conceptos_comprobante = []
+    
+    # SECCIÓN 1: Información de la Empresa
+    st.subheader("1. Selecciona la División")
+    
+    empresas = config['empresas']
+    empresa_nombres = [emp['nombre'] for emp in empresas]
+    
+    empresa_idx = st.selectbox(
+        "División que emite el comprobante:",
+        range(len(empresa_nombres)),
+        format_func=lambda x: empresa_nombres[x]
+    )
+    
+    empresa_seleccionada = empresas[empresa_idx]
+    
+    # Mostrar info de la empresa
+    with st.expander("📋 Ver datos de la división"):
+        st.write(f"**Razón Social:** {empresa_seleccionada['razon_social']}")
+        st.write(f"**RFC:** {empresa_seleccionada['rfc']}")
+        st.write(f"**Dirección:** {empresa_seleccionada['direccion']}")
+        st.write(f"**Teléfono:** {empresa_seleccionada['telefono']}")
+        st.write(f"**Email:** {empresa_seleccionada['email']}")
+    
+    # SECCIÓN 2: Información del Cliente
+    st.subheader("2. Datos del Cliente")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        cliente_nombre = st.text_input("Nombre completo *", placeholder="Juan Pérez García")
+    
+    with col2:
+        cliente_telefono = st.text_input("Número celular *", placeholder="+52 844 123 4567")
+    
+    folio = st.text_input("Folio del Comprobante *", value=f"COMP-{datetime.now().strftime('%Y%m%d-%H%M%S')}")
+    
+    # SECCIÓN 3: Conceptos
+    st.subheader("3. Conceptos de Pago")
+    
+    col_agregar, col_conceptos = st.columns([1, 1])
+    
+    with col_agregar:
+        st.markdown("### ➕ Agregar Concepto")
+        
+        concepto_desc = st.text_area("Descripción del concepto", placeholder="Ej: Pago de curso de Excel Avanzado - Enero 2026")
+        concepto_monto = st.number_input("Monto", min_value=0.0, value=0.0, step=50.0, format="%.2f")
+        
+        if st.button("➕ Agregar Concepto", use_container_width=True, type="primary"):
+            if concepto_desc and concepto_monto > 0:
+                st.session_state.conceptos_comprobante.append({
+                    'descripcion': concepto_desc,
+                    'monto': concepto_monto
+                })
+                st.rerun()
+            else:
+                st.error("Completa la descripción y el monto")
+    
+    with col_conceptos:
+        st.markdown("### 📋 Conceptos Agregados")
+        
+        if st.session_state.conceptos_comprobante:
+            st.write(f"**Total de conceptos:** {len(st.session_state.conceptos_comprobante)}")
+            
+            # Mostrar conceptos con opción de editar
+            for idx, concepto in enumerate(st.session_state.conceptos_comprobante):
+                with st.expander(f"**{idx+1}.** {concepto['descripcion'][:50]}...", expanded=False):
+                    nueva_desc = st.text_area("Descripción", value=concepto['descripcion'], key=f"edit_desc_comp_{idx}")
+                    nuevo_monto = st.number_input("Monto", min_value=0.0, value=float(concepto['monto']), step=50.0, key=f"edit_monto_comp_{idx}", format="%.2f")
+                    
+                    st.caption(f"**Monto:** ${nuevo_monto:,.2f}")
+                    
+                    # Botones de acción
+                    col_btn1, col_btn2, col_btn3, col_btn4 = st.columns(4)
+                    
+                    with col_btn1:
+                        if st.button("💾 Guardar", key=f"save_comp_{idx}", use_container_width=True):
+                            st.session_state.conceptos_comprobante[idx] = {
+                                'descripcion': nueva_desc,
+                                'monto': nuevo_monto
+                            }
+                            st.success("✅ Guardado")
+                            st.rerun()
+                    
+                    with col_btn2:
+                        if idx > 0:
+                            if st.button("⬆️", key=f"up_comp_{idx}", help="Mover arriba", use_container_width=True):
+                                st.session_state.conceptos_comprobante[idx], st.session_state.conceptos_comprobante[idx-1] = \
+                                    st.session_state.conceptos_comprobante[idx-1], st.session_state.conceptos_comprobante[idx]
+                                st.rerun()
+                    
+                    with col_btn3:
+                        if idx < len(st.session_state.conceptos_comprobante) - 1:
+                            if st.button("⬇️", key=f"down_comp_{idx}", help="Mover abajo", use_container_width=True):
+                                st.session_state.conceptos_comprobante[idx], st.session_state.conceptos_comprobante[idx+1] = \
+                                    st.session_state.conceptos_comprobante[idx+1], st.session_state.conceptos_comprobante[idx]
+                                st.rerun()
+                    
+                    with col_btn4:
+                        if st.button("🗑️ Eliminar", key=f"del_comp_{idx}", type="secondary", use_container_width=True):
+                            st.session_state.conceptos_comprobante.pop(idx)
+                            st.rerun()
+            
+            st.markdown("---")
+            if st.button("🗑️ Limpiar todos los conceptos", type="secondary", use_container_width=True):
+                st.session_state.conceptos_comprobante = []
+                st.rerun()
+        else:
+            st.info("No hay conceptos agregados al comprobante")
+    
+    # SECCIÓN 4: Total
+    st.markdown("---")
+    st.subheader("4. Total a Pagar")
+    
+    if st.session_state.conceptos_comprobante:
+        total = sum(concepto['monto'] for concepto in st.session_state.conceptos_comprobante)
+        
+        col1, col2, col3 = st.columns([2, 1, 1])
+        
+        with col3:
+            st.markdown("### TOTAL")
+            st.markdown(f"## ${total:,.2f} {config['configuracion']['moneda']}")
+    
+    # SECCIÓN 5: Comprobante de Pago (Imagen)
+    st.markdown("---")
+    st.subheader("5. Adjuntar Comprobante de Pago (Opcional)")
+    
+    comprobante_imagen = st.file_uploader(
+        "Sube una captura del comprobante de pago",
+        type=['png', 'jpg', 'jpeg'],
+        help="Adjunta una imagen del comprobante bancario o transferencia"
+    )
+    
+    if comprobante_imagen:
+        st.success("✅ Comprobante cargado")
+        st.image(comprobante_imagen, caption="Vista previa del comprobante", width=300)
+    
+    # SECCIÓN 6: Generar PDF
+    st.markdown("---")
+    st.subheader("6. Generar Comprobante de Pago")
+    
+    generar_pdf = st.button("📄 Generar PDF de Comprobante", type="primary", use_container_width=True)
+    
+    if generar_pdf:
+        # Validaciones
+        if not cliente_nombre:
+            st.error("❌ Ingresa el nombre completo del cliente")
+            return
+        
+        if not cliente_telefono:
+            st.error("❌ Ingresa el número celular del cliente")
+            return
+        
+        if not folio:
+            st.error("❌ Ingresa el folio del comprobante")
+            return
+        
+        if not st.session_state.conceptos_comprobante:
+            st.error("❌ Agrega al menos un concepto al comprobante")
+            return
+        
+        with st.spinner("Generando comprobante de pago..."):
+            try:
+                # Preparar datos
+                datos_comprobante = {
+                    'empresa': empresa_seleccionada,
+                    'folio': folio,
+                    'cliente': {
+                        'nombre': cliente_nombre,
+                        'telefono': cliente_telefono
+                    },
+                    'conceptos': st.session_state.conceptos_comprobante
+                }
+                
+                # Agregar imagen si existe
+                if comprobante_imagen:
+                    datos_comprobante['comprobante_imagen'] = comprobante_imagen
+                
+                # Generar PDF
+                pdf_bytes = generar_comprobante_pdf(datos_comprobante, config)
+                
+                st.success("✅ ¡Comprobante de pago generado correctamente!")
+                
+                # Botón de descarga
+                nombre_archivo = f"Comprobante_{folio}_{datetime.now().strftime('%Y%m%d')}.pdf"
+                st.download_button(
+                    label="📥 Descargar Comprobante PDF",
+                    data=pdf_bytes,
+                    file_name=nombre_archivo,
+                    mime="application/pdf",
+                    type="primary",
+                    use_container_width=True
+                )
+                
+            except Exception as e:
+                st.error(f"❌ Error al generar el comprobante: {str(e)}")
+                import traceback
+                st.code(traceback.format_exc())
+
+
 def main():
     """Función principal de la aplicación"""
     # Sidebar
@@ -473,7 +685,7 @@ def main():
     
     modulo = st.sidebar.radio(
         "Selecciona un módulo:",
-        ["📄 Aplicar Membretes", "💼 Generar Cotizaciones"],
+        ["📄 Aplicar Membretes", "💼 Generar Cotizaciones", "💳 Comprobantes de Pago"],
         label_visibility="collapsed"
     )
 
@@ -483,8 +695,10 @@ def main():
     # Mostrar el módulo seleccionado
     if modulo == "📄 Aplicar Membretes":
         modulo_membretes()
-    else:
+    elif modulo == "💼 Generar Cotizaciones":
         modulo_cotizaciones()
+    else:
+        modulo_comprobantes()
 
 
 if __name__ == "__main__":
