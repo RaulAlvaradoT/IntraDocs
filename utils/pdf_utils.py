@@ -2,11 +2,19 @@
 Utilidades para manipulación de PDFs y aplicación de membretes
 """
 import io
+import os
+import tempfile
 from PyPDF2 import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
 from PIL import Image
+
+try:
+    from docx2pdf import convert
+    DOCX2PDF_DISPONIBLE = True
+except ImportError:
+    DOCX2PDF_DISPONIBLE = False
 
 
 def aplicar_membrete_pdf(pdf_file, membrete_path):
@@ -108,3 +116,79 @@ def validar_pdf(file):
         return True, None
     except Exception as e:
         return False, f"Error al leer el PDF: {str(e)}"
+
+
+def convertir_word_a_pdf(docx_file):
+    """
+    Convierte un archivo Word (.docx) a PDF.
+    
+    Args:
+        docx_file: Archivo Word de entrada (file-like object de Streamlit)
+        
+    Returns:
+        bytes: PDF convertido en bytes, o None si falla
+    """
+    if not DOCX2PDF_DISPONIBLE:
+        raise ImportError("La librería docx2pdf no está instalada. Instala con: pip install docx2pdf")
+    
+    try:
+        # Crear archivos temporales
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.docx') as tmp_docx:
+            tmp_docx.write(docx_file.read())
+            tmp_docx_path = tmp_docx.name
+        
+        tmp_pdf_path = tmp_docx_path.replace('.docx', '.pdf')
+        
+        # Convertir Word a PDF
+        convert(tmp_docx_path, tmp_pdf_path)
+        
+        # Leer el PDF generado
+        with open(tmp_pdf_path, 'rb') as pdf_file:
+            pdf_bytes = pdf_file.read()
+        
+        # Limpiar archivos temporales
+        try:
+            os.unlink(tmp_docx_path)
+            os.unlink(tmp_pdf_path)
+        except:
+            pass
+        
+        return pdf_bytes
+        
+    except Exception as e:
+        # Limpiar archivos temporales en caso de error
+        try:
+            if 'tmp_docx_path' in locals():
+                os.unlink(tmp_docx_path)
+            if 'tmp_pdf_path' in locals() and os.path.exists(tmp_pdf_path):
+                os.unlink(tmp_pdf_path)
+        except:
+            pass
+        raise Exception(f"Error al convertir Word a PDF: {str(e)}")
+
+
+def validar_documento(file, nombre_archivo):
+    """
+    Valida que el archivo sea PDF o Word válido.
+    
+    Args:
+        file: Archivo a validar
+        nombre_archivo: Nombre del archivo
+        
+    Returns:
+        tuple: (bool: es válido, str: tipo de archivo ('pdf' o 'docx'), str: mensaje de error si aplica)
+    """
+    extension = nombre_archivo.lower().split('.')[-1]
+    
+    if extension == 'pdf':
+        es_valido, error = validar_pdf(file)
+        return es_valido, 'pdf', error
+    elif extension in ['docx', 'doc']:
+        # Para Word, solo verificamos que no esté vacío
+        if file.size > 0:
+            return True, 'docx', None
+        else:
+            return False, 'docx', "El archivo Word está vacío"
+    else:
+        return False, None, f"Formato no soportado: {extension}"
+

@@ -3,9 +3,10 @@ Aplicación Streamlit - Sistema de Membretes, Cotizaciones y Comprobantes de Pag
 """
 import streamlit as st
 import os
+import io
 import json
 from datetime import datetime
-from utils.pdf_utils import aplicar_membrete_pdf, validar_pdf
+from utils.pdf_utils import aplicar_membrete_pdf, validar_documento, convertir_word_a_pdf
 from utils.cotizacion_utils import generar_cotizacion_pdf
 from utils.comprobante_utils import generar_comprobante_pdf
 
@@ -84,35 +85,50 @@ def modulo_membretes():
             width=250)
     
     with col2:
-        st.subheader("2. Sube tu PDF")
+        st.subheader("2. Sube tu documento")
         
-        pdf_file = st.file_uploader(
-            "Selecciona el archivo PDF",
-            type=['pdf'],
-            help="Sube el documento PDF al que quieres aplicar el membrete"
+        documento_file = st.file_uploader(
+            "Selecciona el archivo PDF o Word",
+            type=['pdf', 'docx', 'doc'],
+            help="Sube un documento PDF o Word (.docx) para aplicarle el membrete"
         )
         
-        if pdf_file:
-            st.success(f"✅ Archivo cargado")
+        if documento_file:
+            st.success(f"✅ Archivo cargado: {documento_file.name}")
             
-            # Validar PDF
-            es_valido, error = validar_pdf(pdf_file)
+            # Validar documento
+            es_valido, tipo_archivo, error = validar_documento(documento_file, documento_file.name)
             
             if not es_valido:
                 st.error(f"❌ {error}")
                 return
 
+            # Mostrar información según el tipo
+            if tipo_archivo == 'docx':
+                st.info("📄 Documento Word detectado - se convertirá a PDF antes de aplicar el membrete")
+
             # Botón para procesar
             if st.button("🎨 Aplicar Membrete", type="primary", use_container_width=True):
-                with st.spinner("Procesando PDF..."):
+                with st.spinner("Procesando documento..."):
                     try:
+                        # Si es Word, convertir a PDF primero
+                        if tipo_archivo == 'docx':
+                            with st.spinner("Convirtiendo Word a PDF..."):
+                                pdf_bytes = convertir_word_a_pdf(documento_file)
+                                pdf_file = io.BytesIO(pdf_bytes)
+                                nombre_base = os.path.splitext(documento_file.name)[0]
+                        else:
+                            pdf_file = documento_file
+                            nombre_base = os.path.splitext(documento_file.name)[0]
+                        
                         # Aplicar membrete
-                        pdf_con_membrete = aplicar_membrete_pdf(pdf_file, membrete_path)
+                        with st.spinner("Aplicando membrete..."):
+                            pdf_con_membrete = aplicar_membrete_pdf(pdf_file, membrete_path)
                         
                         st.success("✅ ¡Membrete aplicado correctamente!")
                         
                         # Nombre del archivo de salida
-                        nombre_salida = f"{os.path.splitext(pdf_file.name)[0]}_con_membrete.pdf"
+                        nombre_salida = f"{nombre_base}_con_membrete.pdf"
                         
                         # Botón de descarga
                         st.download_button(
@@ -522,7 +538,7 @@ def modulo_comprobantes():
     with col_agregar:
         st.markdown("### ➕ Agregar Concepto")
         
-        concepto_desc = st.text_area("Descripción del concepto", placeholder="Ej: Pago de curso de Excel Avanzado - Enero 2026")
+        concepto_desc = st.text_area("", placeholder="Ej: Constancia", label_visibility="collapsed")
         concepto_monto = st.number_input("Monto", min_value=0.0, value=0.0, step=50.0, format="%.2f")
         
         if st.button("➕ Agregar Concepto", use_container_width=True, type="primary"):
@@ -685,7 +701,7 @@ def main():
     
     modulo = st.sidebar.radio(
         "Selecciona un módulo:",
-        ["📄 Aplicar Membretes", "💼 Generar Cotizaciones", "💳 Comprobantes de Pago"],
+        ["📄 Aplicar Membretes", "💼 Generar Cotizaciones", "💳 Comp. de Pago"],
         label_visibility="collapsed"
     )
 

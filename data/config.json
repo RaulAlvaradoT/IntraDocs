@@ -32,12 +32,12 @@
     {
       "codigo": "IMPT-001",
       "descripcion": "Renta de plataforma para aplicación de guías (I, III, V)",
-      "precio_unitario": 7143.00
+      "precio_unitario": 7000.00
     },
     {
       "codigo": "IMPT-002",
       "descripcion": "Dashboard (1 año de acceso)",
-      "precio_unitario": 7143.00
+      "precio_unitario": 2000.00
     },
     {
       "codigo": "IMPT-003",
