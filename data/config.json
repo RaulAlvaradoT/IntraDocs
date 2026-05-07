@@ -1,0 +1,114 @@
+{
+  "empresas": [
+    {
+      "nombre": "Instituto de Atención Integral y Desarrollo Humano A.C.",
+      "razon_social": "Instituto de Atención Integral y Desarrollo Humano A.C.",
+      "rfc": "IAI171117Q25",
+      "direccion": "Piedras Negras 1925, República Oriente, 25280 Saltillo, Coahuila",
+      "telefono": "8444439987",
+      "email": "direccion@intra.org.mx",
+      "logo": "logos/INTRA.png"
+    },
+    {
+      "nombre": "Academia INTRA",
+      "razon_social": "Academia INTRA",
+      "rfc": "-",
+      "direccion": "Piedras Negras 1925, República Oriente, 25280 Saltillo, Coahuila",
+      "telefono": "8444032032",
+      "email": "academia@intra.org.mx",
+      "logo": "logos/academia.png"
+    },
+    {
+      "nombre": "Javier Enrique Martínez Becerra",
+      "razon_social": "Javier Enrique Martínez Becerra",
+      "rfc": "MABJ9110202D3",
+      "direccion": "Piedras Negras 1925, República Oriente, 25280 Saltillo, Coahuila",
+      "telefono": "8442369864",
+      "email": "enriquemtz.aca@gmail.com",
+      "logo": "logos/corporativo.png"
+    }
+  ],
+  "catalogo_productos": [
+    {
+      "codigo": "NOM-005",
+      "descripcion": "Implementación Grande - Plan Avanzado",
+      "precio_unitario": 63882.00
+    },
+    {
+      "codigo": "ILS-001",
+      "descripcion": "Implementacion de la ley silla",
+      "precio_unitario": 13300.00
+    },
+    {
+      "codigo": "IMPT-001",
+      "descripcion": "Renta de plataforma para aplicación de guías (I, III, V)",
+      "precio_unitario": 7000.00
+    },
+    {
+      "codigo": "IMPT-002",
+      "descripcion": "Dashboard (1 año de acceso)",
+      "precio_unitario": 2000.00
+    },
+    {
+      "codigo": "IMPT-003",
+      "descripcion": "Acompañamiento técnico",
+      "precio_unitario": 1786.00
+    },
+    {
+      "codigo": "IMPT-004",
+      "descripcion": "Consultoría",
+      "precio_unitario": 1786.00
+    },
+    {
+      "codigo": "IMPT-005",
+      "descripcion": "Elaboración de informes: Demográfico, ejecutivo y ATS",
+      "precio_unitario": 12428.00
+    },
+    {
+      "codigo": "IMPT-006",
+      "descripcion": "Seguimiento grupal (Nivel de urgencia medio)",
+      "precio_unitario": 10000.00
+    },
+    {
+      "codigo": "IMPT-007",
+      "descripcion": "Seguimiento grupal (Nivel de urgencia alto)",
+      "precio_unitario": 10000.00
+    },
+    {
+      "codigo": "IMPT-008",
+      "descripcion": "Seguimiento individual (Nivel urgente)",
+      "precio_unitario": 499.00
+    },
+    {
+      "codigo": "VL-001",
+      "descripcion": "Taller - Intervención Violencia Laboral",
+      "precio_unitario": 3900.00
+    },
+    {
+      "codigo": "VL-002",
+      "descripcion": "Evaluación individual - Intervención Violencia Laboral",
+      "precio_unitario": 2200.00
+    },
+    {
+      "codigo": "VL-003",
+      "descripcion": "Acta de Comité de atención y seguimiento",
+      "precio_unitario": 3050.00
+    },
+    {
+      "codigo": "VL-004",
+      "descripcion": "Plan de acción - Intervención Violencia Laboral",
+      "precio_unitario": 4270.00
+    },
+    {
+      "codigo": "VL-005",
+      "descripcion": "Actualización de politica de prevención de violencia laboral",
+      "precio_unitario": 3050.00
+    }
+  ],
+  "configuracion": {
+    "iva": 0.16,
+    "moneda": "MXN",
+    "validez_cotizacion_dias": 30,
+    "terminos_condiciones": "- Los precios están sujetos a cambios sin previo aviso.\n- La cotización tiene una validez de 30 días naturales."
+  }
+}
